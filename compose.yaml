@@ -1,0 +1,38 @@
+name: traceable-qa
+
+services:
+  pc:
+    image: powercontext-server:local
+    environment:
+      POWERCONTEXT_SERVER_AUTH_ENABLED: ${POWERCONTEXT_SERVER_AUTH_ENABLED:-true}
+      POWERCONTEXT_SERVER_AUTH_TOKEN: ${POWERCONTEXT_TOKEN:?set POWERCONTEXT_TOKEN in .env}
+      POWERCONTEXT_SERVER_DATABASE_KIND: ${POWERCONTEXT_SERVER_DATABASE_KIND:-sqlite}
+      POWERCONTEXT_SERVER_DATABASE_URL: ${POWERCONTEXT_SERVER_DATABASE_URL:-sqlite+aiosqlite:////data/powercontext.db}
+    volumes:
+      - pc-data:/data
+    # 只发布到回环地址；远程访问请先配置认证与 TLS 终止。
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/health/ready')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  app:
+    build: .
+    depends_on:
+      pc:
+        condition: service_healthy
+    environment:
+      POWERCONTEXT_BASE_URL: http://pc:8000
+      POWERCONTEXT_TOKEN: ${POWERCONTEXT_TOKEN:?set POWERCONTEXT_TOKEN in .env}
+      QA_MAX_BYTES: ${QA_MAX_BYTES:-1800}
+      QA_MODEL_BASE_URL: ${QA_MODEL_BASE_URL:-}
+      QA_MODEL_NAME: ${QA_MODEL_NAME:-}
+      QA_MODEL_API_KEY: ${QA_MODEL_API_KEY:-}
+    ports:
+      - "127.0.0.1:${QA_APP_PORT:-8080}:8080"
+
+volumes:
+  pc-data:

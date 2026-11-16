@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "traceable-qa"
+version = "0.1.0"
+description = "Traceable question answering over financial PDFs and business CSVs."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
+  "pydantic>=2.9,<3",
+  "pydantic-settings>=2.7,<3",
+  "pypdf>=6.19,<7",
+  "pyyaml>=6,<7",
+  "uvicorn[standard]>=0.34,<1",
+]
+
+[project.optional-dependencies]
+# 应用层可独立安装；运行时按需引入，pin 到本人 fork 的 resume 分支。
+runtime = [
+  "powercontext @ git+https://github.com/guan-mingyu266/powercontext@resume",
+]
+
+[dependency-groups]
+dev = [
+  "pytest-cov>=6,<7",
+  "pytest>=8,<9",
+  "ruff>=0.9,<1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qa"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
