@@ -34,7 +34,7 @@
 运行时 fork 的边界证据：
 
 ```bash
-git -C ../powercontext diff --stat upstream/2026-competition HEAD
+git -C ../powercontext_competition diff --stat upstream/2026-competition HEAD
 # 4 个新增文件 +1293/−0（另有 1 条 README 声明）
 ```
 
@@ -254,7 +254,7 @@ SQLite 侧表（应用自有，与运行时库分离）：`documents`（含 `sha
 2. 确认两个仓库的现状：
 
    ```bash
-   git -C ../powercontext log --oneline -1     # 应为 resume 分支的声明 commit
+   git -C ../powercontext_competition log --oneline -1     # 应为 resume 分支的声明 commit
    git log --oneline -1                        # 本仓库
    ```
 

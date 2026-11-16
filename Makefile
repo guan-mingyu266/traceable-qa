@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := help
 .PHONY: help install install-runtime pc-image up down logs test fmt probe bench demo
 
-POWERCONTEXT_DIR ?= ../powercontext
+POWERCONTEXT_DIR ?= ../powercontext_competition
 POWERCONTEXT_VERSION ?= 0.0.0.dev0
 
 help:
